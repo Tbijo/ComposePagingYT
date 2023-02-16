@@ -23,16 +23,28 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePagingYTTheme {
+
                 val viewModel = viewModel<MainViewModel>()
+
                 val state = viewModel.state
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(state.items.size) { i ->
+
                         val item = state.items[i]
+
+                        // Check if we are at the bottom of a list
+                        // i will be the index of the currently composed item
+                        // if it is our last item we know that we reached the bottom
+                        // we need to be sure that we did not reached the end of all data
+                        // and that we are not loading anymore items
                         if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
+                            // only then we can/want to load more items
                             viewModel.loadNextItems()
                         }
+
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -43,7 +55,9 @@ class MainActivity : ComponentActivity() {
                                 fontSize = 20.sp,
                                 color = Color.Black
                             )
+
                             Spacer(modifier = Modifier.height(8.dp))
+
                             Text(item.description)
                         }
                     }
